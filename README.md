@@ -1,78 +1,75 @@
 # cursor-usage-localtime
 
-A tiny Chrome (Manifest V3) extension that shows the usage table on the Cursor dashboard
-(`https://cursor.com/dashboard/usage`) in your browser's time zone instead of UTC.
+Chrome extension that shows the usage table on the Cursor dashboard
+(`https://cursor.com/dashboard/usage`) in **your browser's time zone** instead of UTC.
 
 在 Cursor 控制台的用量页里，把表格里的 UTC 时间改成浏览器当前时区显示。
 
 ```
-Before                          After (browser in Hong Kong)
-Date (UTC)                      Date (UTC+8)
-Nov 5, 03:02 AM                 Nov 5, 11:02 AM
+Before                  After (browser in Hong Kong)
+Date (UTC)              Date (UTC+8)
+Nov 5, 03:02 AM         Nov 5, 11:02 AM
 ```
 
-- The date column of the usage table is replaced in place: local time only, same look as the page.
-- The tooltip on a date shows the full local time with seconds and the zone, e.g. `Nov 5, 2026, 11:02:49 AM GMT+8`.
-- The column header says how far your zone is from UTC: `Date (UTC+8)`.
-- Nothing else on the page is touched, no permissions are requested, nothing is sent anywhere
-  (the extension has no network code at all; the whole thing is one small file, `extension/content.js`).
+No permissions, no network access, nothing is sent anywhere. The whole extension is one small file.
 
 ## Install
 
-Chrome has no store listing for this, so load it unpacked, in the Chrome profile that can open the dashboard:
+1. Download this repo: **Code → Download ZIP** on GitHub, then unzip it (or `git clone` it).
+2. In Chrome, open `chrome://extensions` and switch on **Developer mode** (top right).
+3. Click **Load unpacked** and select the **`extension`** folder (the one that contains `manifest.json`).
+4. Reload the usage page. The header now reads `Date (UTC+8)` (your own offset), and the times are local.
 
-1. Get the `extension/` folder somewhere on disk (clone this repo, or download it as a zip).
-   On WSL, `scripts/sync-to-windows.sh` copies it to `%USERPROFILE%\chrome-extensions\cursor-usage-localtime`.
-2. Open `chrome://extensions` and turn on **Developer mode** (top right).
-3. **Load unpacked**, pick the folder that contains `manifest.json`.
-4. Reload the usage page.
+Use the Chrome profile you sign in to Cursor with: extensions are installed per profile.
+Keep the folder where it is, Chrome reads the extension from it. Remove it any time from `chrome://extensions`.
 
-After changing the code, press the reload button of the extension on `chrome://extensions`.
+### 安装
 
-## What it can and cannot do
+1. 在 GitHub 点 **Code → Download ZIP**，解压。
+2. Chrome 打开 `chrome://extensions`，右上角打开「开发者模式」。
+3. 点「加载已解压的扩展程序」，选择解压出来的 **`extension`** 文件夹（里面有 `manifest.json`）。
+4. 刷新用量页，表头变成 `Date (UTC+8)`，时间即为本地时间。
 
-It changes how times are *displayed*. The server still works in UTC, so:
+请在登录 Cursor 的那个 Chrome 用户（profile）里安装；安装后不要移动或删除该文件夹。
 
-- The date filter (`?from=2026-11-05&to=2026-11-05`) selects UTC days. In Hong Kong, "Nov 5" in the URL
-  is Nov 5 08:00 to Nov 6 08:00 local time.
-- Daily totals and charts are summed per UTC day.
-- Only the usage table's date column is converted; other tables and charts keep UTC.
+## Good to know
 
-Daylight saving time is handled per row: a row from July shows July's offset, a row from November shows
-November's, whatever today's offset is. The header shows the offset as of now.
+This only changes how times are *displayed*; the server still works in UTC.
+
+- The date filter (`?from=2026-11-05&to=2026-11-05`) selects a UTC day. In Hong Kong that is
+  Nov 5 08:00 to Nov 6 08:00 local time.
+- Daily totals and charts are still per UTC day. Only the usage table's date column is converted.
+- Hover a date to see the full local time with seconds, e.g. `Nov 5, 2026, 11:02:49 AM GMT+8`.
+- Daylight saving time is applied per row, by the row's own date. The header shows today's offset.
 
 ## How it works
 
-The usage table is made of `div`s with ARIA roles. The header is `role="columnheader" aria-label="Date (UTC)"`, and a
-date cell is
+The usage table is made of `div`s with ARIA roles; a date cell is
 
 ```html
 <div role="cell"><span title="Nov 5, 2026, 03:02:49 AM UTC">Nov 5, 03:02 AM</span></div>
 ```
 
-The `title` holds the complete UTC time, so the extension parses it (exactly; anything that does not match
-is ignored), formats it with `Intl.DateTimeFormat` in the browser's zone, and writes the cell text and the title back.
-A converted title no longer ends in ` UTC`, which is what makes the conversion idempotent. A
-`MutationObserver` converts again whenever the page changes: new data, another page of rows, a client-side navigation.
+The `title` has the complete UTC time. The extension parses it (strictly: anything that does not match is ignored),
+formats it with `Intl.DateTimeFormat` in the browser's zone, and rewrites the cell text and the title. A converted
+title no longer ends in ` UTC`, so a cell is never converted twice. A `MutationObserver` converts again when the
+page changes (new data, another page of rows, client-side navigation), before the browser paints, so UTC never
+flashes. The existing text node is edited rather than replaced, which keeps the page's React happy. Only tables with
+a `Date (UTC…)` column header are touched.
 
-Details that matter on a React page: the existing text node is edited, not replaced; the observer runs inside the
-mutation callback, before the browser paints, so UTC never flashes; and only tables that have a `Date (UTC…)`
-column header are touched, so the rest of the site is not affected.
-
-The dashboard's markup is not a public API. If Cursor changes it, the extension simply stops converting (it does
-nothing to anything it does not recognize), and `test/fixtures/usage-table.html` is where to start fixing it.
+The dashboard's markup is not a public API. If Cursor changes it, the extension stops converting and leaves the
+page as it is; `test/fixtures/usage-table.html` is where to start fixing it.
 
 ## Development
 
 ```
 npm install
-npm test            # node:test + jsdom, no browser needed
+npm test        # node:test + jsdom, no browser needed
 ```
 
-- `extension/content.js` is the whole extension; in Chrome it runs, under `node` it exports its functions for the tests.
-- `test/core.test.js`: parsing and formatting, including midnight, New Year, half-hour zones and daylight saving time.
-- `test/dom.test.js`: the real table structure (`test/fixtures/usage-table.html`, invented values), idempotency,
-  untouched neighbours, and the observer.
+`extension/content.js` is the whole extension; under `node` it exports its functions for the tests.
+On WSL, `scripts/sync-to-windows.sh` copies `extension/` to `%USERPROFILE%\chrome-extensions\cursor-usage-localtime`
+so Chrome can load it from a Windows path; run it again after a change and press reload on `chrome://extensions`.
 
 ## License
 
