@@ -1,7 +1,7 @@
 // Shows the usage table on https://cursor.com/dashboard in the browser's time zone instead of UTC.
 //
 // The dashboard draws the table as <div role="table"> with a "Date (UTC)" column header, and every date cell as
-//   <div role="cell"><span title="Nov 5, 2026, 03:02:49 AM UTC">Nov 5, 03:02 AM</span></div>
+//   <div role="cell"><span title="Nov 5, 2026, 05:17:33 AM UTC">Nov 5, 05:17 AM</span></div>
 // The title carries the full UTC time (with year and seconds), so nothing has to be guessed: parse the title,
 // rewrite the cell text and the title in local time, and rewrite the header's label. A converted title no longer
 // ends in " UTC", so a converted cell is never converted twice, and a cell the page re-renders (new data, a new
@@ -19,7 +19,7 @@
   // ICU in some engines puts a narrow no-break space before AM/PM; the page uses a plain space.
   const plain = (text) => text.replace(/[\u202f\u00a0]/g, " ");
 
-  /** The epoch milliseconds of a title such as "Nov 5, 2026, 03:02:49 AM UTC", or null if it is not one. */
+  /** The epoch milliseconds of a title such as "Nov 5, 2026, 05:17:33 AM UTC", or null if it is not one. */
   function parseUtcTitle(text) {
     const m = UTC_TITLE.exec(plain(text));
     if (!m) return null;
@@ -49,12 +49,12 @@
     return f;
   }
 
-  /** "Nov 5, 11:02 AM": the same look as the page's own cell text. `timeZone` undefined = the browser's. */
+  /** "Nov 5, 01:17 PM": the same look as the page's own cell text. `timeZone` undefined = the browser's. */
   function formatCell(ms, timeZone) {
     return plain(formatter("cell", timeZone).format(ms));
   }
 
-  /** "Nov 5, 2026, 11:02:49 AM GMT+8": the tooltip, now in local time (and in the page's own style: 2-digit hours). */
+  /** "Nov 5, 2026, 01:17:33 PM GMT+8": the tooltip, now in local time (and in the page's own style: 2-digit hours). */
   function formatTitle(ms, timeZone) {
     return plain(formatter("title", timeZone).format(ms));
   }

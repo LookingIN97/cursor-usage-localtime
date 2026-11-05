@@ -7,7 +7,7 @@ browser's time zone instead of UTC.
 
 ```
 Date (UTC)         →   Date (UTC+8)
-Nov 5, 03:02 AM        Nov 5, 11:02 AM
+Nov 5, 05:17 AM        Nov 5, 01:17 PM
 ```
 
 ## Install / 安装
