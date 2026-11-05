@@ -1,0 +1,47 @@
+<!doctype html>
+<!-- The structure of the dashboard's usage table as seen on 2026-11-05 (classes and attributes as served; values invented). -->
+<html><body>
+<div class="dashboard-table-card">
+  <div role="table" class="dashboard-table-scroll-container min-w-0">
+    <div class="dashboard-table-container">
+      <div class="dashboard-table-header-row" role="row">
+        <div role="columnheader" aria-label="Date (UTC)" class="dashboard-table-header" style="width: 130px"><span class="min-w-0 truncate">Date (UTC)</span></div>
+        <div role="columnheader" aria-label="Type" class="dashboard-table-header cursor-grab" tabindex="0"><span class="min-w-0 truncate">Type</span></div>
+        <div role="columnheader" aria-label="Model" class="dashboard-table-header cursor-grab" tabindex="0"><span class="min-w-0 truncate">Model</span></div>
+        <div role="columnheader" aria-label="Tokens" class="dashboard-table-header cursor-grab" tabindex="0"><span class="min-w-0 truncate">Tokens</span></div>
+        <div role="columnheader" aria-label="Requests" class="dashboard-table-header cursor-grab" tabindex="0"><span class="min-w-0 truncate">Requests</span></div>
+      </div>
+      <div role="rowgroup" class="dashboard-table-rows" id="rows">
+        <div role="row" class="dashboard-table-row"><div class="dashboard-table-row-divider"></div>
+          <div role="cell" class="dashboard-table-cell"><span title="Nov 5, 2026, 03:02:49 AM UTC">Nov 5, 03:02 AM</span></div>
+          <div role="cell" class="dashboard-table-cell"><span title="Included">Included</span></div>
+          <div role="cell" class="dashboard-table-cell"><div class="flex"><span title="model-a" class="truncate">model-a</span></div></div>
+          <div role="cell" class="dashboard-table-cell"><div class="inline-block cursor-help"><div class="dashboard-tabular-nums">8.4M</div></div></div>
+          <div role="cell" class="dashboard-table-cell"><span>1</span></div>
+        </div>
+        <div role="row" class="dashboard-table-row"><div class="dashboard-table-row-divider"></div>
+          <div role="cell" class="dashboard-table-cell"><span title="Nov 5, 2026, 12:44:05 AM UTC">Nov 5, 12:44 AM</span></div>
+          <div role="cell" class="dashboard-table-cell"><span title="Included">Included</span></div>
+          <div role="cell" class="dashboard-table-cell"><div class="flex"><span title="model-a" class="truncate">model-a</span></div></div>
+          <div role="cell" class="dashboard-table-cell"><div class="inline-block cursor-help"><div class="dashboard-tabular-nums">14.7M</div></div></div>
+          <div role="cell" class="dashboard-table-cell"><span>1</span></div>
+        </div>
+        <div role="row" class="dashboard-table-row"><div class="dashboard-table-row-divider"></div>
+          <div role="cell" class="dashboard-table-cell"><span title="Nov 4, 2026, 11:59:59 PM UTC">Nov 4, 11:59 PM</span></div>
+          <div role="cell" class="dashboard-table-cell"><span title="Included">Included</span></div>
+          <div role="cell" class="dashboard-table-cell"><div class="flex"><span title="model-b" class="truncate">model-b</span></div></div>
+          <div role="cell" class="dashboard-table-cell"><div class="inline-block cursor-help"><div class="dashboard-tabular-nums">1.2M</div></div></div>
+          <div role="cell" class="dashboard-table-cell"><span>1</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Must stay untouched: a table without a "Date (UTC)" column, and a stray span outside any table. -->
+<div role="table" id="other">
+  <div role="row"><div role="columnheader" aria-label="Day"><span>Day</span></div></div>
+  <div role="row"><div role="cell"><span title="Nov 5, 2026, 03:02:49 AM UTC">Nov 5, 03:02 AM</span></div></div>
+</div>
+<p><span id="stray" title="Nov 5, 2026, 03:02:49 AM UTC">Nov 5, 03:02 AM</span></p>
+</body></html>

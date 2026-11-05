@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Cursor usage in local time",
+  "version": "0.1.0",
+  "description": "Shows the usage table on the Cursor dashboard in your browser's time zone instead of UTC.",
+  "minimum_chrome_version": "95",
+  "content_scripts": [
+    {
+      "matches": ["https://cursor.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ]
+}

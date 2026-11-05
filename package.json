@@ -1,0 +1,13 @@
+{
+  "name": "cursor-usage-localtime",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome extension: show the Cursor dashboard usage table in the browser's local time zone.",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test \"test/*.test.js\""
+  },
+  "devDependencies": {
+    "jsdom": "^27.0.0"
+  }
+}
